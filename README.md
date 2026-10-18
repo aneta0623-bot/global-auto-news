@@ -6,6 +6,7 @@
 
 - 대시보드: `https://aneta0623-bot.github.io/global-auto-news/`
 - 파일명 주소: `https://aneta0623-bot.github.io/global-auto-news/global-auto-news.html`
+- 업체 대시보드 전용 보기: `https://aneta0623-bot.github.io/global-auto-news/global-auto-news-01.html`
 
 ## 자동 갱신
 
