@@ -52,6 +52,16 @@ const cleanUrl = raw => {
     return u.toString();
   } catch { return raw; }
 };
+const articleLinkFixes = new Map([
+  ['https://www.autossegredos.com.br/marcas/volkswagen-marcas/volkswagen-sao-carlos-30-anos-15-milhoes-de-motores', {
+    url:'https://www.vrum.com.br/aceleradas/2026/10/7524891-volkswagen-sao-carlos-faz-30-anos-com-recorde-de-15-milhoes-de-motores.html',
+    source:'Vrum', sourceUrl:'https://www.vrum.com.br/'
+  }],
+  ['https://www.reuters.com/business/autos-transportation/kia-invest-649-million-bring-electric-car-production-mexico-2026-07-29', {
+    url:'https://www.investmonterrey.com/investment-announcements/kia-announces-649-million-usd-investment-to-produce-its-first-electric-vehicle-in-monterrey/',
+    source:'Invest Monterrey', sourceUrl:'https://www.investmonterrey.com/'
+  }]
+]);
 function parseFeed(xml, engine, country) {
   const out=[];
   for (const item of xml.matchAll(/<item(?:\s[^>]*)?>([\s\S]*?)<\/item>/gi)) {
@@ -65,7 +75,8 @@ function parseFeed(xml, engine, country) {
     if (!title || !rawUrl || !Number.isFinite(date.getTime())) continue;
     const day=date.toISOString().slice(0,10);
     if (day < startDate || day > new Date().toISOString().slice(0,10)) continue;
-    out.push({country,title,desc:engine==='Google News'?'':desc.slice(0,500),url:cleanUrl(rawUrl),source,sourceUrl,engine,date:day});
+    const cleanedUrl=cleanUrl(rawUrl), linkFix=articleLinkFixes.get(cleanedUrl.replace(/\/+$/,''));
+    out.push({country,title,desc:engine==='Google News'?'':desc.slice(0,500),url:linkFix?.url||cleanedUrl,source:linkFix?.source||source,sourceUrl:linkFix?.sourceUrl||sourceUrl,engine,date:day});
   }
   return out;
 }
